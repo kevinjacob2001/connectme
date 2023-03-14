@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 // Components for protected routes
@@ -13,15 +13,39 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import ProfilePage from './components/ProfilePage';
+import { useSelector } from 'react-redux';
 
+
+const App = () => {
+
+
+  
 // A function to check if the user is authenticated
 const isAuthenticated = () => {
   // Check if the user is logged in or not
   // You can implement your own logic to check authentication
-  return false; // For example, always return true for demo purposes
+  const token = localStorage.getItem('token');
+  if(token) return true;
+  else return false;
+
 }
 
-const App = () => {
+const ProtectedRoute = ({ component: Component, ...rest }) => {
+  useEffect(() => {
+    isAuthenticated();
+  }, []);
+
+  return (
+    isAuthenticated() ? (
+      <Component {...rest} />
+    ) : (
+      <Navigate to="/login" replace />
+    )
+  )
+}
+
+
+
   return (
     <Router>
       <Routes>
@@ -42,17 +66,6 @@ const App = () => {
       </Routes>
     </Router>
   );
-}
-
-// A component for protected routes
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-  return (
-    isAuthenticated() ? (
-      <Component {...rest} />
-    ) : (
-      <Navigate to="/login" replace />
-    )
-  )
 }
 
 export default App;

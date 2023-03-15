@@ -1,29 +1,43 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import Sidebar from './dashboard/Sidebar';
+import Mainsection from './dashboard/MainSection'
 
 
 const Dashboard = () => {
-    const navigate=useNavigate()
-    const logOutUser = () => {
-        const auth = getAuth();
-        signOut(auth).then(() => {
-            console.log("Logout successful")
-            localStorage.removeItem("token")
-            navigate("/login")
-        }).catch((error) => {
-            // An error happened.
-            console.log("Logout ERRR")
+    const navigate = useNavigate()
+ 
 
-        });
+    // useEffect(()=>{
+    //     const fetchUserDetails=async()=>{
+    //         try {
+    //             const emailIDfromLocalStorage=localStorage.getItem("userEmailID")
+    //             const userRef = doc(db, "users", "keivn@asas.asd");
+    //             try {
+    //                 const docSnap = await getDoc(userRef);
+    //                 console.log(docSnap.data());
+    //             } catch(error) {
+    //                 console.log(error)
+    //             }
 
-    }
+    //             console.log('User profile saved!');
+    //         } catch (error) {
+    //             console.error('Error saving user profile: ', error);
+    //         }
+    //     }
+    //     fetchUserDetails()
+    // },[])
     return (
         <div>
+            <div className='flex'>
+                <Sidebar />
+                <Mainsection/>
+            </div>
 
-            welcome to the home page
 
-            <button onClick={logOutUser}>Log out</button>
         </div>
 
 

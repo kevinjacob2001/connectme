@@ -1,13 +1,13 @@
 import { async } from '@firebase/util';
-import { arrayUnion, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
+import { arrayRemove, arrayUnion, collection, doc, FieldValue, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { db } from '../firebase';
 
 function UserPage() {
     const { id } = useParams();
     const [userDetails, setUserDetails] = useState([])
-
+    const [pendingRequestsUsers, setPendingRequestsUsers] = useState([])
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -36,6 +36,23 @@ function UserPage() {
         console.log("Current user:", emailIDLoggedInUser)
 
     }, [])
+    const checkIffRequestIsPending = useCallback(async () => {
+        let emailIDLoggedInUser = localStorage.getItem("userEmailID")
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", emailIDLoggedInUser));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            setPendingRequestsUsers(doc.data().sendRequests)
+            console.log("doc.data().sendRequests",doc.data().sendRequests)
+        })
+},[]);
+    useEffect(() => {
+        checkIffRequestIsPending();
+      }, [checkIffRequestIsPending]);
+
+
 
 
 
@@ -65,7 +82,55 @@ function UserPage() {
             await updateDoc(receivedRequestUserRef, {
                 sendRequests: arrayUnion(id)
             });
+            checkIffRequestIsPending()
 
+            console.log('Friend added successfully!');
+        } catch (error) {
+            console.error('Error adding friend: ', error);
+        }
+    };
+
+    const unsendRequest = async () => {
+        console.log("dsdsddd")
+        try {
+            let emailIDLoggedInUser = localStorage.getItem("userEmailID")
+
+            console.log("P1")
+            const usersRef = collection(db, "users");
+
+            const q = query(usersRef, where("email", "==", emailIDLoggedInUser));
+            console.log("P2")
+
+            const querySnapshot = await getDocs(q);
+            let idOfReceivedRequestUser;
+
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+                idOfReceivedRequestUser = doc.id
+            });
+
+            console.log("P3")
+
+console.log("id",id)
+            const userDoc = doc(db, 'users', id);
+
+            
+
+            await updateDoc(userDoc, {
+                receivedRequests: arrayRemove(idOfReceivedRequestUser)
+            });
+
+            console.log("P4")
+
+
+            let receivedRequestUserRef = doc(db, 'users', idOfReceivedRequestUser);
+            await updateDoc(receivedRequestUserRef, {
+                sendRequests: arrayRemove(id)
+            });
+            checkIffRequestIsPending()
+
+            
             console.log('Friend added successfully!');
         } catch (error) {
             console.error('Error adding friend: ', error);
@@ -92,7 +157,20 @@ function UserPage() {
                     Email id: {userDetails.email}
                 </h1>
 
-                <button className='p-2 rounded-md bg-blue-600 text-white' onClick={() => addFriend(id)}>Add friend</button>
+
+
+                {pendingRequestsUsers.includes(id) ? (
+                    <>
+                        <button className='p-2 rounded-md bg-green-600 text-white'>Already sent</button>
+                        <button className='p-2 rounded-md bg-red-600 text-white' onClick={unsendRequest}>Unsend request</button>
+
+                    </>
+                ) : <button className='p-2 rounded-md bg-blue-600 text-white' onClick={() => addFriend(id)}>Add friend</button>
+
+                }
+
+                {''}
+
                 <p className="text-sm text-gray-600 text-center">
                 </p>
             </div>

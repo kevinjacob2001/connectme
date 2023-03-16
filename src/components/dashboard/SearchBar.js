@@ -19,7 +19,12 @@ function SearchBar() {
                     querySnapshot.forEach((doc) => {
                         allUsersNames.push({ name: doc.data().fullName, id: doc.id })
                     });
-                    setAllUsers(allUsersNames); // setState to allUsers
+                    //remove a specific user input  from a js array
+                    let currentUserFirestoreDocID = localStorage.getItem("currentUserFirestoreDocID")
+
+                    let arr = allUsersNames.filter(obj => obj.id !== currentUserFirestoreDocID);
+
+                    setAllUsers(arr); // setState to allUsers
                 } catch (error) {
                     console.log(error)
                 }

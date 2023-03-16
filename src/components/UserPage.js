@@ -8,6 +8,8 @@ function UserPage() {
     const { id } = useParams();
     const [userDetails, setUserDetails] = useState([])
     const [pendingRequestsUsers, setPendingRequestsUsers] = useState([])
+    const [friends, setFriends] = useState([])
+    const [mutualFriends,setMutualFriends]=useState([])
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -45,6 +47,8 @@ function UserPage() {
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             setPendingRequestsUsers(doc.data().sendRequests)
+            setFriends(doc.data().friends)
+
             console.log("doc.data().sendRequests", doc.data().sendRequests)
         })
     }, []);
@@ -97,12 +101,9 @@ function UserPage() {
         console.log("dsdsddd")
         try {
             let emailIDLoggedInUser = localStorage.getItem("userEmailID")
-
-            console.log("P1")
             const usersRef = collection(db, "users");
 
             const q = query(usersRef, where("email", "==", emailIDLoggedInUser));
-            console.log("P2")
 
             const querySnapshot = await getDocs(q);
             let idOfReceivedRequestUser;
@@ -113,32 +114,58 @@ function UserPage() {
                 idOfReceivedRequestUser = doc.id
             });
 
-            console.log("P3")
-
             console.log("id", id)
             const userDoc = doc(db, 'users', id);
-
-
 
             await updateDoc(userDoc, {
                 receivedRequests: arrayRemove(idOfReceivedRequestUser)
             });
-
-            console.log("P4")
-
 
             let receivedRequestUserRef = doc(db, 'users', idOfReceivedRequestUser);
             await updateDoc(receivedRequestUserRef, {
                 sendRequests: arrayRemove(id)
             });
             checkIffRequestIsPending()
-
-
             console.log('Friend added successfully!');
         } catch (error) {
             console.error('Error adding friend: ', error);
         }
     };
+
+    const findMutualFriends=useCallback(async()=>{
+        let currentUserFirestoreDocID = localStorage.getItem("currentUserFirestoreDocID")
+        console.log("Person A",currentUserFirestoreDocID)
+        console.log("Person B",id)
+        let friendsOfA=[]
+        let friendsOfB=[]
+        try {
+            let userRef = doc(db, "users", id);
+            try {
+                const docSnap = await getDoc(userRef);
+                friendsOfA=docSnap.data().friends
+            } catch (error) {
+                console.log(error)
+            }
+
+             userRef = doc(db, "users", currentUserFirestoreDocID);
+            try {
+                const docSnap = await getDoc(userRef);
+                friendsOfB=docSnap.data().friends
+            } catch (error) {
+                console.log(error)
+            }
+            console.log(friendsOfA,friendsOfB)
+            const result = friendsOfA.filter(element => friendsOfB.includes(element));
+            setMutualFriends(result)
+        } catch (error) {
+            console.error('Error saving user profile: ', error);
+        }
+
+    },[id])
+
+    useEffect(()=>{
+        findMutualFriends()
+    },[findMutualFriends])
 
     return (
         <div className="bg-white my-12 pb-6 w-full justify-center items-center overflow-hidden md:max-w-sm rounded-lg shadow-sm mx-auto">
@@ -162,18 +189,45 @@ function UserPage() {
 
 
 
-                {pendingRequestsUsers.includes(id) ? (
+                {pendingRequestsUsers.includes(id) && (
                     <>
                         <button className='p-2 rounded-md bg-green-600 text-white'>Already sent</button>
                         <button className='p-2 rounded-md bg-red-600 text-white' onClick={unsendRequest}>Unsend request</button>
 
                     </>
-                ) : <button className='p-2 rounded-md bg-blue-600 text-white' onClick={() => addFriend(id)}>Add friend</button>
+                )}
 
-                }
+                {friends.includes(id) && (
+                    <>
+                        <h1 className='bg-red-200 text-center  rounded-md mt-4'>You are friends with this person</h1>
+                    </>
+                )  }
 
+{!pendingRequestsUsers.includes(id)&&!friends.includes(id) &&(
+ <button className='p-2 rounded-md bg-blue-600 text-white' onClick={() => addFriend(id)}>Add friend</button>
+)}
+
+               
                 {''}
 
+{mutualFriends.length>0 &&(
+    <div className='bg-green-200 text-center  rounded-md mt-4'>
+        {mutualFriends.length===1&&(<h1 className='font-bold'>You have 1 mutual friend</h1>)}
+{mutualFriends.length>1&&<h1 className='font-bold'> You have {mutualFriends.length} Mutual Friends</h1>}
+
+    <div className="flex flex-wrap">
+        {mutualFriends.map((mutualFriend)=>{
+            return(
+                <div className="w-1/2">
+                    <h1 className='text-center'>{mutualFriend}</h1>
+                </div>
+            )
+        })}
+    </div>
+    </div>
+)}
+
+        
                 <p className="text-sm text-gray-600 text-center">
                 </p>
             </div>

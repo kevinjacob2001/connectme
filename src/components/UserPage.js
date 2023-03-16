@@ -32,25 +32,28 @@ function UserPage() {
 
     useEffect(() => {
         let emailIDLoggedInUser = localStorage.getItem("userEmailID")
-
         console.log("Current user:", emailIDLoggedInUser)
-
     }, [])
+
+
+
     const checkIffRequestIsPending = useCallback(async () => {
         let emailIDLoggedInUser = localStorage.getItem("userEmailID")
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("email", "==", emailIDLoggedInUser));
         const querySnapshot = await getDocs(q);
-
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             setPendingRequestsUsers(doc.data().sendRequests)
-            console.log("doc.data().sendRequests",doc.data().sendRequests)
+            console.log("doc.data().sendRequests", doc.data().sendRequests)
         })
-},[]);
+    }, []);
+
+
+
     useEffect(() => {
         checkIffRequestIsPending();
-      }, [checkIffRequestIsPending]);
+    }, [checkIffRequestIsPending]);
 
 
 
@@ -58,9 +61,9 @@ function UserPage() {
 
 
     const addFriend = async (id) => {
-        console.log()
         try {
             let emailIDLoggedInUser = localStorage.getItem("userEmailID")
+            console.log(emailIDLoggedInUser)
 
             const usersRef = collection(db, "users");
 
@@ -112,10 +115,10 @@ function UserPage() {
 
             console.log("P3")
 
-console.log("id",id)
+            console.log("id", id)
             const userDoc = doc(db, 'users', id);
 
-            
+
 
             await updateDoc(userDoc, {
                 receivedRequests: arrayRemove(idOfReceivedRequestUser)
@@ -130,7 +133,7 @@ console.log("id",id)
             });
             checkIffRequestIsPending()
 
-            
+
             console.log('Friend added successfully!');
         } catch (error) {
             console.error('Error adding friend: ', error);

@@ -8,28 +8,7 @@ import Mainsection from './dashboard/MainSection'
 
 
 const Dashboard = () => {
-    const navigate = useNavigate()
- 
 
-    // useEffect(()=>{
-    //     const fetchUserDetails=async()=>{
-    //         try {
-    //             const emailIDfromLocalStorage=localStorage.getItem("userEmailID")
-    //             const userRef = doc(db, "users", "keivn@asas.asd");
-    //             try {
-    //                 const docSnap = await getDoc(userRef);
-    //                 console.log(docSnap.data());
-    //             } catch(error) {
-    //                 console.log(error)
-    //             }
-
-    //             console.log('User profile saved!');
-    //         } catch (error) {
-    //             console.error('Error saving user profile: ', error);
-    //         }
-    //     }
-    //     fetchUserDetails()
-    // },[])
     return (
         <div>
             <div className='flex'>

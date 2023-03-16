@@ -35,7 +35,7 @@ const Login = () => {
 
             try {
                 const userRef = collection(db,"users");
-                await addDoc(userRef, {
+               const resp=await addDoc(userRef, {
                     fullName: fullName,
                     phoneNumber: phoneNumber,
                     email: email,
@@ -45,7 +45,10 @@ const Login = () => {
                     sendRequests:[],
                     receivedRequests:[]
                 });
-                console.log('User profile saved!');
+
+                localStorage.setItem("currentUserFirestoreDocID", resp.id);
+
+
             } catch (error) {
                 console.error('Error saving user profile: ', error);
             }

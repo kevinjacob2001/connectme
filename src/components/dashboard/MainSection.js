@@ -1,4 +1,5 @@
 import React from 'react'
+import ReceivedFriendRequestsSection from './ReceivedFriendRequestsSection'
 import SearchBar from './SearchBar'
 
  const Mainsection = () => {
@@ -6,6 +7,7 @@ import SearchBar from './SearchBar'
     <div className="">
 {/*Search bar*/}
 <SearchBar/>
+<ReceivedFriendRequestsSection/>
 
     </div>
   )

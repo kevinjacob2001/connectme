@@ -41,7 +41,9 @@ const Login = () => {
                     email: email,
                     bio: "",
                     profilePicUrl: "",
-                    friends: []
+                    friends: [],
+                    sendRequests:[],
+                    receivedRequests:[]
                 });
                 console.log('User profile saved!');
             } catch (error) {

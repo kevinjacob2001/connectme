@@ -2,29 +2,27 @@ import JSONDATA from "./mock_data.json";
 import { useEffect, useState } from "react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
+import { useNavigate } from "react-router-dom";
 
 function SearchBar() {
     const [searchText, setSearchText] = useState("");
-    const [allUsers,setAllUsers]=useState([])
+    const [allUsers, setAllUsers] = useState([])
+    const navigate=useNavigate();
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const allUsersNames=[]
+                const allUsersNames = []
                 const userRef = collection(db, "users");
                 try {
                     const querySnapshot = await getDocs(userRef);
                     querySnapshot.forEach((doc) => {
-                        allUsersNames.push(doc.data().fullName)
+                        allUsersNames.push({ name: doc.data().fullName, id: doc.id })
                     });
-
-
                     setAllUsers(allUsersNames); // setState to allUsers
-  
                 } catch (error) {
                     console.log(error)
                 }
-
                 console.log('User profile saved!');
             } catch (error) {
                 console.error('Error saving user profile: ', error);
@@ -33,12 +31,14 @@ function SearchBar() {
         fetchUserDetails()
     }, [])
 
+    const navigateToProfile=(userID)=>{
+        navigate(`/user/${userID}`)
+    }
 
 
     return (
         <div className="App">
-{console.log(allUsers)
-}            <input
+            <input
                 type="text"
                 placeholder="Search..."
                 value={searchText}
@@ -50,16 +50,16 @@ function SearchBar() {
                 <ul>
                     {allUsers.filter((val) => {
                         if (searchText === "") {
-                            return val;
+                            return val.name;
                         } else if (
-                            val.toLowerCase().includes(searchText.toLowerCase())
+                            val.name.toLowerCase().includes(searchText.toLowerCase())
                         ) {
-                            return val;
+                            return val.name;
                         } else {
                             return "";
                         }
                     }).map((data, index) => (
-                        <li key={index}>{data}</li>
+                        <li key={index} onClick={()=>navigateToProfile(data.id)}>{data.name}</li>
                     ))}
                 </ul>
             </div>

@@ -14,6 +14,7 @@ import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import ProfilePage from './components/ProfilePage';
 import { useSelector } from 'react-redux';
+import UserPage from './components/UserPage';
 
 
 const App = () => {
@@ -59,8 +60,10 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
 
         {/* Protected routes */}
         <Route path="/dashboard" element={<ProtectedRoute component={Dashboard} />} />
-        <Route path="/profile" element={<ProtectedRoute component={ProfilePage} />} />
+        <Route path="/user/:id" element={<ProtectedRoute component={UserPage} />} />
 
+
+        <Route path="/profile" element={<ProtectedRoute component={ProfilePage} />} />
         {/* 404 Not Found */}
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -60,7 +60,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
 
         {/* Protected routes */}
         <Route path="/dashboard" element={<ProtectedRoute component={Dashboard} />} />
-        <Route path="/user/:id" element={<ProtectedRoute component={UserPage} />} />
+        <Route path="/user/:id" element={<ProtectedRoute component={Dashboard} />} />
 
 
         <Route path="/profile" element={<ProtectedRoute component={ProfilePage} />} />

@@ -2,24 +2,12 @@
 // import React from 'react'
 // import { useNavigate } from 'react-router-dom';
 
-// const Sidebar = () => {
-//     const navigate=useNavigate();
-//     const logOutUser = () => {
-//         const auth = getAuth();
-//         signOut(auth).then(() => {
-//             console.log("Logout successful")
-//             localStorage.removeItem("token")
-//             navigate("/login")
-//         }).catch((error) => {
-//             // An error happened.
-//             console.log("Logout ERRR")
 
-//         });
 
-//     }
+import { getAuth, signOut } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
 import UserPage from '../UserPage';
 import Mainsection from './MainSection';
@@ -29,7 +17,7 @@ function Sidebar() {
     const location = useLocation();
     const [showModal, setShowModal] = React.useState(false);
     const [userDetails,setUserDetails]=useState([])
-   
+   const navigate=useNavigate()
     const [fullName, setFullName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [bio, setBio] = useState('');
@@ -41,6 +29,23 @@ function Sidebar() {
     const handleSidebarClose = () => {
         setIsSidebarOpen(false);
     };
+
+
+    const logOutUser = () => {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+            console.log("Logout successful")
+            localStorage.removeItem("token")
+            navigate("/login")
+        }).catch((error) => {
+            // An error happened.
+            console.log("Logout ERRR")
+
+        });
+
+    
+}
+
 
     const updateUser=async()=>{
         console.log("Hey")
@@ -199,7 +204,7 @@ function Sidebar() {
                         exact
                         to="/profile"
                         activeClassName="font-bold bg-gray-200 text-indigo-600"
-                        className="block py-2 pl-3 pr-4 hover:bg-gray-200 transition duration-200 m-3 rounded-md"
+                        className=" py-2 pl-3 pr-3 bg-red-500 hover:bg-red-700 text-white transition duration-200 m-3 rounded-md absolute bottom-0"
                     >
                         <div className='flex items-center'>
                             <svg
@@ -211,7 +216,7 @@ function Sidebar() {
                                     d="M15.5 14.5c-3.3 0-6-2.7-6-6V6h12v2.5c0 3.3-2.7 6-6 6zM6 12c0 2.2 1.8 4 4 4h4v-2H10c-1.1 0-2-.9-2-2V6H6v6zm12 2h-4v2h4c1.1 0 2-.9 2-2v-2h-2v2zm-2-10V4h-8v2h8z"
                                 />
                             </svg>
-                            <h2>Logout</h2>
+                            <h2 onClick={logOutUser}>Logout</h2>
                         </div>
                     </NavLink>
                 </nav>

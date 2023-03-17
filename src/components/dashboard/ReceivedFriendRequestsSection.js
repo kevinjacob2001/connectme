@@ -178,11 +178,12 @@ function ReceivedFriendRequestsSection() {
     <div className='flex items-center'>
         <h1 className='ml-2'>{requestID}</h1>
     </div>
-    <div className='flex items-center ml-auto space-x-2'>
-        <button onClick={() => acceptFriendRequest(requestID)} className='bg-blue-500 text-white px-4 py-2 rounded-full'>Accept</button>
-        <button onClick={() => declineFriendRequest(requestID)} className='bg-red-500 text-white px-4 py-2 rounded-full'>Decline</button>
+    <div className='flex items-center ml-2 space-x-2'>
+        <button onClick={() => acceptFriendRequest(requestID)} className='bg-blue-500 hover:opacity-80 text-white px-4 py-2 rounded-full'>Accept</button>
+        <button onClick={() => declineFriendRequest(requestID)} className='bg-red-500 hover:opacity-80 text-white px-4 py-2 rounded-full'>Decline</button>
     </div>
 </div>
+
 
                                     </>
 
@@ -206,8 +207,9 @@ function ReceivedFriendRequestsSection() {
                         <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
                             Your are connected with!
                         </div>
+                        <div  className='flex items-center bg-gray-100 border-l-4 border-green-500 py-2 px-4 my-2 rounded'>
 
-                        <p className="mt-2 text-gray-500">
+                        <p className=" text-gray-500">
                         {friends.length === 0 && <h1 className='text-gray-400'>You have no friends</h1>}
                 {friends.map((requestID, key) => {
                     return (
@@ -216,15 +218,20 @@ function ReceivedFriendRequestsSection() {
                                 <h1 className='ml-2'>{requestID}</h1>
                             </div>
                             <div className='flex items-center space-x-2 space-y-2'>
-                                <button onClick={() => removeFriend(requestID)} className='bg-red-500 text-white px-4 py-2 rounded-full'>Remove friend</button>
+                                <button onClick={() => removeFriend(requestID)} className='bg-red-500 text-white px-4 py-2 rounded-full ml-2'>Unfriend</button>
                             </div>
                         </div>
                     )
                 })
                 }        </p>
                     </div>
+                    </div>
+
+
+
                 </div>
             </div>
+
 
 
 

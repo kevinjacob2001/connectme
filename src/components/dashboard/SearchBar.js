@@ -45,9 +45,9 @@ function SearchBar() {
         <div className="App  ">
             <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search friends ..."
                 value={searchText}
-                className=" bg-indigo-100 w-full  px-4 py-2 text-gray-700  rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300"
+                className=" bg-[#F3F4F6] w-full  px-4 py-2 text-gray-700  rounded-lg shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300"
 
                 onChange={(event) => {
                     setSearchText(event.target.value);

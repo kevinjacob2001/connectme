@@ -7,7 +7,7 @@ function ReceivedFriendRequestsSection() {
     const [userDetails, setUserDetails] = useState({});
     const [receivedRequests, setReceivedRequests] = useState([])
     const [receivedUserName, setReceivedUserName] = useState([])
-    const [friends,setFriends]=useState([])
+    const [friends, setFriends] = useState([])
 
     // const showData=useCallback(async()=>{
     //     console.log("receivedUserName is",receivedUserName)
@@ -53,7 +53,7 @@ function ReceivedFriendRequestsSection() {
     }, [receivedRequests?.length])
 
 
-    const fetchAllOfYourFriends=useCallback(async()=>{
+    const fetchAllOfYourFriends = useCallback(async () => {
         let currentUserFirestoreDocID = localStorage.getItem("currentUserFirestoreDocID")
         let userDoc = doc(db, 'users', currentUserFirestoreDocID);
 
@@ -64,17 +64,17 @@ function ReceivedFriendRequestsSection() {
             const friends = docSnap.data().friends;
             setFriends(friends)
             // Use a City instance method
-            console.log("friends",friends);
-          } else {
+            console.log("friends", friends);
+        } else {
             console.log("No such document!");
-          }
-    
-    },[])
+        }
+
+    }, [])
 
     useEffect(() => {
         fetchReceivedRequests()
         fetchAllOfYourFriends()
-    }, [fetchReceivedRequests,fetchAllOfYourFriends])
+    }, [fetchReceivedRequests, fetchAllOfYourFriends])
 
 
 
@@ -129,7 +129,7 @@ function ReceivedFriendRequestsSection() {
     }
 
 
-    const removeFriend=async(requestID)=>{
+    const removeFriend = async (requestID) => {
         localStorage.getItem("currentUserFirestoreDocID")
         let currentUserFirestoreDocID = localStorage.getItem("currentUserFirestoreDocID")
 
@@ -152,31 +152,63 @@ function ReceivedFriendRequestsSection() {
 
 
     return (
-        <div>
-            <div className='m-6 border-red-50 border-[1px]'>
-                <h1 className='font-semibold'>Received friend requests</h1>
-                {receivedRequests.length === 0 && <h1 className='text-gray-400'>No pending friend requests</h1>}
+        <div className=' space-y-8'>
 
-                {receivedRequests.map((requestID, key) => {
-                    return (
-                        <div key={key} className='flex justify-between items-center'>
-                            <div className='flex items-center'>
-                                <h1 className='ml-2'>{requestID}</h1>
-                            </div>
-                            <div className='flex items-center space-x-2 space-y-2'>
-                                <button onClick={() => acceptFriendRequest(requestID)} className='bg-blue-500 text-white px-4 py-2 rounded-full mr-2'>Accept</button>
-                                <button onClick={() => declineFriendRequest(requestID)} className='bg-red-500 text-white px-4 py-2 rounded-full'>Decline</button>
-                            </div>
+            <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+                <div className="md:flex">
+                    <div className="md:flex-shrink-0">
+                        <img
+                            className="h-48 w-full object-contain md:w-48 p-2"
+                            src="https://cdn0.iconfinder.com/data/icons/sports-games/49/games-entertainment-ghost-avatar-512.png"
+                            alt="Card image"
+                        />
+                    </div>
+                    <div className="p-8">
+                        <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                            Pending friend requests
                         </div>
-                    )
-                })
-                }
+
+                        <p className="mt-2 text-gray-500">
+                            {receivedRequests.length === 0 && <h1 className='text-gray-400'>No pending friend requests</h1>}
+
+                            {receivedRequests.map((requestID, key) => {
+                                return (
+                                    <>
+<div key={key} className='flex items-center bg-gray-100 border-l-4 border-blue-500 py-2 px-4 my-2 rounded'>
+    <div className='flex items-center'>
+        <h1 className='ml-2'>{requestID}</h1>
+    </div>
+    <div className='flex items-center ml-auto space-x-2'>
+        <button onClick={() => acceptFriendRequest(requestID)} className='bg-blue-500 text-white px-4 py-2 rounded-full'>Accept</button>
+        <button onClick={() => declineFriendRequest(requestID)} className='bg-red-500 text-white px-4 py-2 rounded-full'>Decline</button>
+    </div>
+</div>
+
+                                    </>
+
+
+                                )
+                            })}         </p>
+                    </div>
                 </div>
+            </div>
 
+            <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+                <div className="md:flex">
+                    <div className="md:flex-shrink-0">
+                        <img
+                            className="h-48 w-full object-contain md:w-48 p-2"
+                            src="https://cdn-icons-png.flaticon.com/512/69/69589.png"
+                            alt="Card image"
+                        />
+                    </div>
+                    <div className="p-8">
+                        <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                            Your are connected with!
+                        </div>
 
-                <div className='m-6 border-red-50 border-[1px]'>
-                <h1 className='font-semibold'>Your friends </h1>
-                {friends.length === 0 && <h1 className='text-gray-400'>No friend</h1>}
+                        <p className="mt-2 text-gray-500">
+                        {friends.length === 0 && <h1 className='text-gray-400'>You have no friends</h1>}
                 {friends.map((requestID, key) => {
                     return (
                         <div key={key} className='flex justify-between items-center'>
@@ -189,8 +221,17 @@ function ReceivedFriendRequestsSection() {
                         </div>
                     )
                 })
-                }
+                }        </p>
+                    </div>
                 </div>
+            </div>
+
+
+
+
+
+
+       
         </div>
     );
 }

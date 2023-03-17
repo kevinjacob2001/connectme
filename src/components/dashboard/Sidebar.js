@@ -74,7 +74,7 @@ function Sidebar() {
                 <nav className="mt-10">
                     <NavLink
                         exact
-                        to="/"
+                        to="/dashboard"
                         activeClassName="font-bold bg-gray-200 text-indigo-600"
                         className="block py-2 pl-8 pr-4 hover:bg-gray-200 transition duration-200"
                     >

@@ -17,8 +17,10 @@
 //         });
 
 //     }
-import React, { useState } from 'react';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { db } from '../../firebase';
 import UserPage from '../UserPage';
 import Mainsection from './MainSection';
 
@@ -26,8 +28,12 @@ function Sidebar() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
     const [showModal, setShowModal] = React.useState(false);
-
-
+    const [userDetails,setUserDetails]=useState([])
+   
+    const [fullName, setFullName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [bio, setBio] = useState('');
+  
     const handleSidebarOpen = () => {
         setIsSidebarOpen(true);
     };
@@ -35,6 +41,63 @@ function Sidebar() {
     const handleSidebarClose = () => {
         setIsSidebarOpen(false);
     };
+
+    const updateUser=async()=>{
+        console.log("Hey")
+        try {
+            let idFromLocal=localStorage.getItem("currentUserFirestoreDocID");
+          const data={
+                fullName:fullName,
+                phoneNumber:phoneNumber,
+                bio:bio
+          }
+          console.log(" data is",data)
+            const userRef = doc(db, "users", idFromLocal);
+            try {
+                await updateDoc(userRef, data)
+                console.log("Updated successfully!")
+                // console.log(docSnap.data())
+            } catch (error) {
+                console.log(error)
+            }
+            fetchUserDetails()
+        } catch (error) {
+            console.error('Error saving user profile: ', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchUserDetails()
+    }, [])
+        const fetchUserDetails = async () => {
+            try {
+                let idFromLocal=localStorage.getItem("currentUserFirestoreDocID");
+
+                const userRef = doc(db, "users", idFromLocal);
+                try {
+                    const docSnap = await getDoc(userRef);
+                    console.log(docSnap.data())
+                    setUserDetails(docSnap.data())
+                    setFullName(docSnap.data().fullName)
+                    setPhoneNumber(docSnap.data().phoneNumber)
+                    setBio(docSnap.data().bio)
+                    // console.log(docSnap.data())
+                } catch (error) {
+                    console.log(error)
+                }
+
+                console.log('User profile saved!');
+            } catch (error) {
+                console.error('Error saving user profile: ', error);
+            }
+        }
+
+
+        const closeModal = () => {
+
+            setShowModal(false)
+            window.location.reload()
+        };
 
     return (
       
@@ -161,51 +224,54 @@ function Sidebar() {
           <div
             className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+            <div className="relative w-80  my-6 mx-auto max-w-3xl">
               {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                {/*header*/}
-                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">
-                    Modal Title
-                  </h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
-                </div>
-                {/*body*/}
-                <div className="relative p-6 flex-auto">
-                  <p className="my-4 text-slate-500 text-lg leading-relaxed">
-                    I always felt like I could do anything. That’s the main
-                    thing people are controlled by! Thoughts- their perception
-                    of themselves! They're slowed down by their perception of
-                    themselves. If you're taught you can’t do anything, you
-                    won’t do anything. I was taught I could do everything.
-                  </p>
-                </div>
-                {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                  <button
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </div>
+              <div class="w-full max-w-sm bg-white  rounded-lg shadow dark:bg-gray-400 dark:border-gray-700">
+    <div class="flex justify-end px-4 pt-4">
+        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
+            <span class="sr-only">Open dropdown</span>
+            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+        </button>
+        <div id="dropdown" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <ul class="py-2" aria-labelledby="dropdownButton">
+            <li>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Edit</a>
+            </li>
+            <li>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Export Data</a>
+            </li>
+            <li>
+                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+            </li>
+            </ul>
+        </div>
+    </div>
+    <div class="flex flex-col items-center pb-10">
+        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image"/>
+        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{userDetails.fullName}</h5>
+       
+        <div class="space-y-2">
+  <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+  <input  value={fullName} onChange={(e) => setFullName(e.target.value)}  type="text" name="fullName" id="fullName" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required/>
+
+  <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
+    <input  value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} type="text" name="phoneNumber" id="phoneNumber" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required/>
+
+  <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
+  <textarea   value={bio} onChange={(e) => setBio(e.target.value)} type="bio" name="bio"  rows="3"  id="bio" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required/>
+
+</div>
+
+
+       
+        <div class="flex mt-4 space-x-3 md:mt-6">
+            <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={updateUser}>Update</a>
+            <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700" onClick={closeModal}>Close</a>
+        </div>
+    </div>
+</div>
+
+
             </div>
           </div>
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>

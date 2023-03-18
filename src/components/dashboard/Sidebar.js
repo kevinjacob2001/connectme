@@ -16,12 +16,12 @@ function Sidebar() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
     const [showModal, setShowModal] = React.useState(false);
-    const [userDetails,setUserDetails]=useState([])
-   const navigate=useNavigate()
+    const [userDetails, setUserDetails] = useState([])
+    const navigate = useNavigate()
     const [fullName, setFullName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [bio, setBio] = useState('');
-  
+
     const handleSidebarOpen = () => {
         setIsSidebarOpen(true);
     };
@@ -35,7 +35,8 @@ function Sidebar() {
         const auth = getAuth();
         signOut(auth).then(() => {
             console.log("Logout successful")
-            localStorage.removeItem("token")
+            localStorage.clear()
+
             navigate("/login")
         }).catch((error) => {
             // An error happened.
@@ -43,20 +44,20 @@ function Sidebar() {
 
         });
 
-    
-}
+
+    }
 
 
-    const updateUser=async()=>{
+    const updateUser = async () => {
         console.log("Hey")
         try {
-            let idFromLocal=localStorage.getItem("currentUserFirestoreDocID");
-          const data={
-                fullName:fullName,
-                phoneNumber:phoneNumber,
-                bio:bio
-          }
-          console.log(" data is",data)
+            let idFromLocal = localStorage.getItem("currentUserFirestoreDocID");
+            const data = {
+                fullName: fullName,
+                phoneNumber: phoneNumber,
+                bio: bio
+            }
+            console.log(" data is", data)
             const userRef = doc(db, "users", idFromLocal);
             try {
                 await updateDoc(userRef, data)
@@ -74,42 +75,42 @@ function Sidebar() {
     useEffect(() => {
         fetchUserDetails()
     }, [])
-        const fetchUserDetails = async () => {
+    const fetchUserDetails = async () => {
+        try {
+            let idFromLocal = localStorage.getItem("currentUserFirestoreDocID");
+
+            const userRef = doc(db, "users", idFromLocal);
             try {
-                let idFromLocal=localStorage.getItem("currentUserFirestoreDocID");
-
-                const userRef = doc(db, "users", idFromLocal);
-                try {
-                    const docSnap = await getDoc(userRef);
-                    console.log(docSnap.data())
-                    setUserDetails(docSnap.data())
-                    setFullName(docSnap.data().fullName)
-                    setPhoneNumber(docSnap.data().phoneNumber)
-                    setBio(docSnap.data().bio)
-                    // console.log(docSnap.data())
-                } catch (error) {
-                    console.log(error)
-                }
-
-                console.log('User profile saved!');
+                const docSnap = await getDoc(userRef);
+                console.log(docSnap.data())
+                setUserDetails(docSnap.data())
+                setFullName(docSnap.data().fullName)
+                setPhoneNumber(docSnap.data().phoneNumber)
+                setBio(docSnap.data().bio)
+                // console.log(docSnap.data())
             } catch (error) {
-                console.error('Error saving user profile: ', error);
+                console.log(error)
             }
+
+            console.log('User profile saved!');
+        } catch (error) {
+            console.error('Error saving user profile: ', error);
         }
+    }
 
 
-        const closeModal = () => {
+    const closeModal = () => {
 
-            setShowModal(false)
-            window.location.reload()
-        };
+        setShowModal(false)
+        window.location.reload()
+    };
 
     return (
-      
-    
+
+
         <div className="flex  w-screen ">
             {/* Sidebar */}
-            
+
 
             <div
                 className={`${isSidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'
@@ -119,7 +120,7 @@ function Sidebar() {
 
 
 
-                
+
                 {/* Sidebar header */}
                 <div className="flex items-center justify-between mt-8 ml-8">
                     <div>
@@ -222,67 +223,71 @@ function Sidebar() {
                 </nav>
             </div>
             <>
-        
-
-      {showModal ? (
-        <>
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          >
-            <div className="relative w-80  my-6 mx-auto max-w-3xl">
-              {/*content*/}
-              <div class="w-full max-w-sm bg-white  rounded-lg shadow dark:bg-gray-400 dark:border-gray-700">
-    <div class="flex justify-end px-4 pt-4">
-        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
-            <span class="sr-only">Open dropdown</span>
-            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
-        </button>
-        <div id="dropdown" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-            <ul class="py-2" aria-labelledby="dropdownButton">
-            <li>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Edit</a>
-            </li>
-            <li>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Export Data</a>
-            </li>
-            <li>
-                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
-            </li>
-            </ul>
-        </div>
-    </div>
-    <div class="flex flex-col items-center pb-10">
-        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image"/>
-        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{userDetails.fullName}</h5>
-       
-        <div class="space-y-2">
-  <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
-  <input  value={fullName} onChange={(e) => setFullName(e.target.value)}  type="text" name="fullName" id="fullName" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required/>
-
-  <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
-    <input  value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} type="text" name="phoneNumber" id="phoneNumber" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required/>
-
-  <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
-  <textarea   value={bio} onChange={(e) => setBio(e.target.value)} type="bio" name="bio"  rows="3"  id="bio" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required/>
-
-</div>
 
 
-       
-        <div class="flex mt-4 space-x-3 md:mt-6">
-            <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={updateUser}>Update</a>
-            <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700" onClick={closeModal}>Close</a>
-        </div>
-    </div>
-</div>
+                {showModal ? (
+                    <>
+                        <div
+                            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                        >
+                            <div className="relative w-80  my-6 mx-auto max-w-3xl">
+                                {/*content*/}
+                                <div class="w-full max-w-sm bg-white  rounded-lg shadow dark:bg-gray-400 dark:border-gray-700">
+                                    <div class="flex justify-end px-4 pt-4">
+                                        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
+                                            <span class="sr-only">Open dropdown</span>
+                                            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+                                        </button>
+                                        <div id="dropdown" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                                            <ul class="py-2" aria-labelledby="dropdownButton">
+                                                <li>
+                                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Edit</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Export Data</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-center pb-10">
+                                        <img
+                                            alt="img"
+                                            className="w-24 h-24 mb-3 rounded-full shadow-lg"
+                                            src="/docs/images/people/profile-picture-3.jpg" />
+
+                                        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{userDetails.fullName}</h5>
+
+                                        <div class="space-y-2">
+                                            <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                            <input value={fullName} onChange={(e) => setFullName(e.target.value)} type="text" name="fullName" id="fullName" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required />
+
+                                            <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                            <input value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} type="text" name="phoneNumber" id="phoneNumber" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required />
+
+                                            <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
+                                            <textarea value={bio} onChange={(e) => setBio(e.target.value)} type="bio" name="bio" rows="3" id="bio" autocomplete="given-name" className="block w-full p-3  focus:outline-none text-sm text-gray-900   rounded-lg bg-gray-50   dark:bg-gray-300  dark:placeholder-gray-400 dark:text-white  " placeholder="Search Mockups, Logos..." required />
+
+                                        </div>
 
 
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
-    </>
+
+                                        <div class="flex mt-4 space-x-3 md:mt-6">
+                                            <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={updateUser}>Update</a>
+                                            <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700" onClick={closeModal}>Close</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                    </>
+                ) : null}
+            </>
 
             {location.pathname === "/dashboard" && (<Mainsection handleSidebarOpen={handleSidebarOpen} />)}
             {location.pathname.split("/")[1] === "user" && (<UserPage handleSidebarOpen={handleSidebarOpen} />)}
@@ -291,7 +296,7 @@ function Sidebar() {
 
 
         </div>
-         
+
     );
 };
 

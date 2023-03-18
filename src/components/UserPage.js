@@ -1,5 +1,5 @@
 import { async } from '@firebase/util';
-import { arrayRemove, arrayUnion, collection, doc, FieldValue, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, doc, FieldValue, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react'
 import { NavLink, useParams, useSearchParams } from 'react-router-dom'
 import { db } from '../firebase';
@@ -41,17 +41,24 @@ function UserPage() {
 
 
     const checkIffRequestIsPending = useCallback(async () => {
-        let emailIDLoggedInUser = localStorage.getItem("userEmailID")
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", emailIDLoggedInUser));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
+        let currentUserFirestoreDocID = localStorage.getItem("currentUserFirestoreDocID")
+        // const usersRef = collection(db, "users");
+        // console.log("pendingggggggggg")
+        // const q = query(usersRef, where("email", "==", emailIDLoggedInUser));
+        // const querySnapshot = await getDocs(q);
+
+
+        console.log(currentUserFirestoreDocID)
+         onSnapshot(doc(db, "users", currentUserFirestoreDocID), (doc) => {
             setPendingRequestsUsers(doc.data().sendRequests)
             setFriends(doc.data().friends)
+    });
 
-            console.log("doc.data().sendRequests", doc.data().sendRequests)
-        })
+        
+
+
+
+    
     }, []);
 
 
@@ -77,7 +84,7 @@ function UserPage() {
     const addFriend = async (id) => {
         try {
             let emailIDLoggedInUser = localStorage.getItem("userEmailID")
-            console.log(emailIDLoggedInUser)
+            console.log("emailIDLoggedInUserssssssssssssssss",emailIDLoggedInUser)
 
             const usersRef = collection(db, "users");
 
@@ -85,11 +92,17 @@ function UserPage() {
 
             const querySnapshot = await getDocs(q);
             let idOfReceivedRequestUser;
+
             querySnapshot.forEach((doc) => {
                 // doc.data() is never undefined for query doc snapshots
                 console.log(doc.id, " => ", doc.data());
                 idOfReceivedRequestUser = doc.id
             });
+
+
+
+
+            console.log("idOfReceivedRequestUser isssss",idOfReceivedRequestUser)
             const userDoc = doc(db, 'users', id);
             await updateDoc(userDoc, {
                 receivedRequests: arrayUnion(idOfReceivedRequestUser)
@@ -107,6 +120,24 @@ function UserPage() {
         }
     };
 
+    // useEffect(() => {
+    //     const fetchUserId = async () => {
+    //         let emId = "izu@as.dss";
+
+    //         const q = query(collection(db, "cities"), where("capital", "==", true));
+
+    //         const querySnapshot = await getDocs(q);
+    //         querySnapshot.forEach((doc) => {
+    //           // doc.data() is never undefined for query doc snapshots
+    //           console.log(doc.id, " => ", doc.data());
+    //         });
+            
+              
+    //     }
+    //     fetchUserId()
+    // }, [])
+
+
     const unsendRequest = async () => {
         console.log("dsdsddd")
         try {
@@ -123,6 +154,10 @@ function UserPage() {
                 console.log(doc.id, " => ", doc.data());
                 idOfReceivedRequestUser = doc.id
             });
+
+
+
+
 
             console.log("id", id)
             const userDoc = doc(db, 'users', id);
@@ -199,7 +234,7 @@ function UserPage() {
                                     <p class="font-bold text-gray-700 text-xl">Phone</p>
                                     <p class="mt-2 text-gray-500">{userDetails.phoneNumber} </p>
                                 </div>
-                
+
 
 
                             </div>
@@ -222,7 +257,7 @@ function UserPage() {
 
                                 {friends.includes(id) && (
                                     <>
-                                        <h1 className='bg-red-200 text-center  rounded-md mt-4'>You are friends with this person</h1>
+                                        <h1 className='bg-red-200 text-center p-2 font-semibold rounded-md mt-4'>You are friends with this person</h1>
                                     </>
                                 )}
 

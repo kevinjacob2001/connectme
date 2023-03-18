@@ -12,6 +12,7 @@ const Mainsection = ({ handleSidebarOpen }) => {
     const getCurrentUserDetails=async()=>{
 
       let currentUserFirestoreDocID = localStorage.getItem("currentUserFirestoreDocID")
+      console.log("currentUserFirestoreDocID is",currentUserFirestoreDocID)
       try {
         const userRef = doc(db, "users", currentUserFirestoreDocID);
         try {
@@ -29,12 +30,7 @@ const Mainsection = ({ handleSidebarOpen }) => {
 },[])
 
   return (
-    //     <div className="">
-    // {/*Search bar*/}
-    // <SearchBar/>
-    // <ReceivedFriendRequestsSection/>
 
-    //     </div>
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header */}
       <header className="flex justify-between items-center py-4 px-6 bg-white border-b-[1px]">

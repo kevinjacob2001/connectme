@@ -4,7 +4,7 @@ import { auth, db } from '../firebase';
 import { useSelector, useDispatch } from 'react-redux'
 import { isAuthTrue, isAuthFalse } from '../reducers/userSlice'
 import { useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { getFirestore } from 'firebase/firestore'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -87,6 +87,25 @@ const Login = () => {
             const response = await signInWithEmailAndPassword(auth, email, password)
             localStorage.setItem("userEmailID", response.user.email);
             localStorage.setItem("token", response.user.accessToken);
+
+
+
+            const q = query(collection(db, "users"), where("email", "==", response.user.email));
+
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+              // doc.data() is never undefined for query doc snapshots
+
+              localStorage.setItem("currentUserFirestoreDocID", doc.id);
+
+            });
+            
+
+
+
+
+
+
             toast.success('You have successfully Logged-in!', {
                 position: "top-right",
                 autoClose: 5000,

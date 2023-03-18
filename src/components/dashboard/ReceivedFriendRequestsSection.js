@@ -1,3 +1,4 @@
+import { async } from '@firebase/util';
 import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react'
 import { db } from '../../firebase';
@@ -29,7 +30,6 @@ function ReceivedFriendRequestsSection() {
     //     })
     // },[receivedUserName])
     const fetchReceivedRequests = useCallback(async () => {
-        let currentUserFirestoreDocID = localStorage.getItem("currentUserFirestoreDocID")
 
 
 
@@ -42,6 +42,7 @@ function ReceivedFriendRequestsSection() {
                 onSnapshot(doc(db, "users", currentUserFirestoreDocID), (doc) => {
                     setReceivedRequests(doc.data().receivedRequests);
                 });
+
 
             } catch (error) {
                 console.log(error)
@@ -168,7 +169,7 @@ function ReceivedFriendRequestsSection() {
                             {receivedRequests.map((requestID, key) => {
                                 return (
                                     <>
-                                        <div key={key} className='flex items-center bg-gray-100 border-l-4 border-blue-500 py-2 px-4 my-2 rounded'>
+                                        <div key={key} className='m-1 flex items-center bg-gray-100 border-l-4 border-blue-500 py-2 px-4 my-2 rounded'>
                                             <div className='flex items-center'>
                                                 <h1 className='ml-2'>{requestID}</h1>
                                             </div>
@@ -210,8 +211,9 @@ function ReceivedFriendRequestsSection() {
 
                                 {friends.map((requestID, key) => {
                                     return (
-                                        <div key={key} className='flex justify-between items-center'>
+                                        <div key={key} className='flex justify-between items-center m-1'>
                                             <div className='flex items-center'>
+
                                                 <h1 className='ml-2'>{requestID}</h1>
                                             </div>
                                             <div className='flex items-center space-x-2 space-y-2'>
@@ -223,19 +225,8 @@ function ReceivedFriendRequestsSection() {
                                 }        </p>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
-
-
-
-
-
-
-
-
         </div>
     );
 }

@@ -51,8 +51,6 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     <Router>
       <Routes>
         {/* Unprotected routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
 
         {/* Login and Signup routes */}
         <Route path="/login" element={<Login />} />

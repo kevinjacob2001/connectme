@@ -148,9 +148,9 @@ const Login = () => {
     return (
         <>
 
-            <div className="relative flex flex-col justify-center min-h-screen overflow-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-300 to-purple-400">
+            <div className="relative flex flex-col justify-center min-h-screen overflow-hidden bg-indigo-300 ">
                 <div className="w-full p-6 m-auto bg-white rounded-md shadow-lg lg:max-w-xl">
-                    <h1 className="text-3xl font-semibold text-center text-purple-700 ">
+                    <h1 className="text-3xl font-semibold text-center text-indigo-600 ">
                         Connectme
                         <div>
                         </div>
@@ -281,7 +281,7 @@ const Login = () => {
                                 <div className="mt-6">
                                     <button
                                         onClick={(e) => login(e)}
-                                        className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
+                                        className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-indigo-600 rounded-md hover:bg-indigo-400 focus:outline-none focus:bg-purple-600">
                                         Login
                                     </button>
                                 </div>

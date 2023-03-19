@@ -152,7 +152,7 @@ function ReceivedFriendRequestsSection() {
                 <div className="md:flex">
                     <div className="md:flex-shrink-0">
                         <img
-                            className="h-48 w-full object-contain md:w-48 p-2"
+                            className="h-32 w-full object-contain md:w-32 p-2"
                             src="https://cdn0.iconfinder.com/data/icons/sports-games/49/games-entertainment-ghost-avatar-512.png"
                             alt="Card image"
                         />
@@ -193,7 +193,7 @@ function ReceivedFriendRequestsSection() {
                 <div className="md:flex">
                     <div className="md:flex-shrink-0">
                         <img
-                            className="h-48 w-full object-contain md:w-48 p-2"
+                            className="h-32 w-full object-contain md:w-32 p-2"
                             src="https://cdn-icons-png.flaticon.com/512/69/69589.png"
                             alt="Card image"
                         />
@@ -207,8 +207,6 @@ function ReceivedFriendRequestsSection() {
 
 
                                 {friends.length === 0 && <h1 className='text-gray-400'>You have no friends</h1>}
-
-
                                 {friends.map((requestID, key) => {
                                     return (
                                         <div key={key} className='flex justify-between items-center m-1'>

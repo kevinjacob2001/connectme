@@ -40,7 +40,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     isAuthenticated() ? (
       <Component {...rest} />
     ) : (
-      <Navigate to="/login" replace />
+      <Navigate to="/" replace />
     )
   )
 }
@@ -53,8 +53,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
         {/* Unprotected routes */}
 
         {/* Login and Signup routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={<Login />} />
 
         {/* Protected routes */}
         <Route path="/dashboard" element={<ProtectedRoute component={Dashboard} />} />

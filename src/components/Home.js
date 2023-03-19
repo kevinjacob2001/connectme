@@ -9,7 +9,7 @@ const Home = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
             console.log("Logout successful")
-            navigate("/login")
+            navigate("/")
         }).catch((error) => {
             // An error happened.
             console.log("Logout ERRR")

@@ -37,7 +37,7 @@ function Sidebar() {
             console.log("Logout successful")
             localStorage.clear()
 
-            navigate("/login")
+            navigate("/")
         }).catch((error) => {
             // An error happened.
             console.log("Logout ERRR")
@@ -203,7 +203,7 @@ function Sidebar() {
 
 <NavLink
                         exact
-                        to="/login"
+                        to="/"
                         activeClassName="font-bold bg-gray-200 text-indigo-600"
                         className=" py-2 pl-3 pr-3  border-2 text-semibold text-white transition duration-200 m-3 rounded-md absolute bottom-0"
                     >

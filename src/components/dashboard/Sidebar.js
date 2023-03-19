@@ -125,9 +125,12 @@ function Sidebar() {
                 <div className="flex items-center justify-between mt-8 ml-8">
                     <div>
                         <img
-                            className="h-8 w-auto rounded-full"
-                            src="https://via.placeholder.com/150"
+                            className="h-8 w-auto rounded-full cursor-pointer"
+                            src="https://img.freepik.com/free-icon/user_318-159711.jpg"
                             alt="Logo"
+                            onClick={() => setShowModal(true)}
+                            
+
                         />
                     </div>
                     <div className="relative">
